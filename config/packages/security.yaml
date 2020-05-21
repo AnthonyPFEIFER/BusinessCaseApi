@@ -1,0 +1,46 @@
+security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_PRO
+        ROLE_PRO: ROLE_PRO
+    providers:
+        app_pro_provider:
+            entity:
+                class : App\Entity\Professional
+                property: username
+        app_admin_provider:
+            entity:
+                class: App\Entity\Admin
+                property: username
+
+        chain_provider:
+            chain:
+                providers: ['app_pro_provider', 'app_admin_provider']
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            anonymous: true
+            stateless: true
+            provider: chain_provider
+            guard:
+                authenticators:
+                    - App\Security\AppApiKeyAuthenticator
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#firewalls-authentication
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: ^/pro, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+       # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/adverts, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin, roles: IS_AUTHENTICATED_ANONYMOUSLY }
