@@ -18,6 +18,7 @@ class Admin implements UserInterface
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      * @Asserts\NotNull
+     * @Groups({"admin"})
      */
     private $id;
 
@@ -25,23 +26,24 @@ class Admin implements UserInterface
      * @ORM\Column(type="string", length=255, unique=true)
      * @Asserts\Length(min=4, max=15 )
      * @Asserts\Unique
+     * @Groups({"admin"})
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Asserts\Length(min=7, max=15 )
+     * @Groups({"admin"})
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"user"})
+     * @Groups({"admin"})
      */
     private $apiKey;
 
     private $roles = [];
-
 
 
     public function getId(): ?int
@@ -63,15 +65,8 @@ class Admin implements UserInterface
 
     public function getRoles()
     {
-        $roles = $this->roles;
-
-        $roles[] = 'ROLE_PRO';
-        $roles[] = 'ROLE_ADMIN';
-
-        return array_unique($roles);
-
-        /*         $this->roles = ['ROLE_ADMIN', 'ROLE_PRO'];
-        return $this->roles; */
+        $this->roles = ["ROLE_ADMIN"];
+        return $this->roles;
     }
 
 

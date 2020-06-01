@@ -18,16 +18,32 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class AdminController extends AbstractController
 {
+
+
     /**
-     * @Route("/admin/login", name="apiKey-admin")
+     * @Route("/login", name="apiKey-admin")
      */
-    public function apiKey(Request $request, SerializerInterface $serializer)
+    public function loginAdmin(Request $request, SerializerInterface $serializer)
     {
-        $adminRepository = $this->getDoctrine()->getRepository(Admin::class);
-        $admin = $adminRepository->apiKeyAdmin('Lodevie', 'P@ssw0rd');
-        $admin = $serializer->serialize($admin, 'json');
-        return new JsonResponse($admin, Response::HTTP_CREATED, [], true);
+
+        $loginAdmin = $request->getContent();
+        $login = $serializer->deserialize($loginAdmin, Admin::class, 'json');
+        $user = $this->getDoctrine()->getRepository(Admin::class)->findOneBy(['username' => $login->getUsername()]);
+        if ($user == null) {
+            $message = "Vos identifiants sont incorrects";
+            return new JsonResponse($message, Response::HTTP_UNAUTHORIZED);
+        }
+        $hash = hash("sha256", $login->getPassword());
+        if ($user->getPassword() == $hash) {
+            $userCo = $serializer->serialize($user, 'json', ["groups" => "admin"]);
+            return new JsonResponse($userCo, Response::HTTP_OK, [], true);
+        } else {
+            $message = "Vos identifiants sont incorrects";
+            return new JsonResponse($message, Response::HTTP_UNAUTHORIZED);
+        }
     }
+
+
     /**
      * @Route("/register", name="register", methods={"POST"})
      */

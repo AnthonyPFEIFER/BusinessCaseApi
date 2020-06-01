@@ -85,12 +85,14 @@ class ProfessionnelController extends AbstractController
         return new JsonResponse($professional, Response::HTTP_CREATED, [], true);
     }
     /**
-     * @Route("/pro/edit", name="edit-pro", methods={"PUT"})
+     * @Route("/pro/edit/{id}", name="edit-pro", methods={"PUT"})
      */
-    public function edit(Request $request, SerializerInterface $serializer)
+    public function edit(Request $request, SerializerInterface $serializer, $id)
     {
         $editPro = $this->getUser();
         $data = $request->getContent();
+        $proRepository = $this->getDoctrine()->getRepository(Professional::class);
+        $editPro = $proRepository->findOneBy(["id" => $id]);
         $serializer->deserialize(
             $data,
             Professional::class,

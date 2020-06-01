@@ -25,6 +25,7 @@ class Garage
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Professional", inversedBy="garages")
+     * @Groups({"garage"})
      */
     private $professional;
 

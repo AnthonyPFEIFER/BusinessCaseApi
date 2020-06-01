@@ -182,11 +182,8 @@ class Professional implements UserInterface
     }
     public function getRoles()
     {
-        $roles = $this->roles;
-
-        $roles[] = 'ROLE_PRO';
-
-        return array_unique($roles);
+        $this->roles = ["ROLE_PRO"];
+        return $this->roles;
     }
 
     /**

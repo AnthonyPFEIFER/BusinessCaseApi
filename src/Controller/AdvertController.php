@@ -54,11 +54,10 @@ class AdvertController extends AbstractController
         return new JsonResponse($advert, Response::HTTP_OK, [], true);
     }
 
-
     /**
-     * @Route("/pro/advert-add", name="add-advert", methods={"POST"}) 
+     * @Route("/pro/addAdvert/{id}", name="addAdvert", methods={"POST"})
      */
-    public function addAdvert(Request $request, SerializerInterface $serializer)
+    public function addAdvert(Request $request, SerializerInterface $serializer, $id)
     {
         $advertAdd = $request->getContent();
         $advertTrad = $serializer->deserialize($advertAdd, AdvertTrad::class, 'json');
@@ -67,7 +66,7 @@ class AdvertController extends AbstractController
         $modele = $modelRepository->findOneBy(['name' => $advertTrad->getModel()]);
 
         $garageRepository = $this->getDoctrine()->getRepository(Garage::class);
-        $garage = $garageRepository->findOneBy(['id' => $advertTrad->getGarage()]);
+        $garage = $garageRepository->findOneBy(['name' => $advertTrad->getGarage()]);
 
         $fuelRepository = $this->getDoctrine()->getRepository(Fuel::class);
         $fuel = $fuelRepository->findOneBy(['type' => $advertTrad->getFuel()]);
@@ -77,10 +76,36 @@ class AdvertController extends AbstractController
         $advert->setModel($modele);
         $advert->setFuel($fuel);
         $advert->setRef(uniqid());
-        /* 
-        $date = new \DateTime();
-        $advert->setCreatedAt($date);
- */
+
+        $this->getDoctrine()->getManager()->persist($advert);
+        $this->getDoctrine()->getManager()->flush();
+
+        $advertToAdd = $serializer->serialize($advert, 'json', ["groups" => "adverts"]);
+        return new JsonResponse($advertToAdd, 201, [], true);
+    }
+    /**
+     * @Route("/pro/advert-add/{id}", name="add-advert", methods={"POST"}) 
+     */
+    public function advertAdd(Request $request, SerializerInterface $serializer, $id)
+    {
+        $advertAdd = $request->getContent();
+        $advertTrad = $serializer->deserialize($advertAdd, AdvertTrad::class, 'json');
+
+        $modelRepository = $this->getDoctrine()->getRepository(Model::class);
+        $modele = $modelRepository->findOneBy(['name' => $advertTrad->getModel()]);
+
+        $garageRepository = $this->getDoctrine()->getRepository(Garage::class);
+        $garage = $garageRepository->findOneBy(['name' => $advertTrad->getGarage()]);
+
+        $fuelRepository = $this->getDoctrine()->getRepository(Fuel::class);
+        $fuel = $fuelRepository->findOneBy(['type' => $advertTrad->getFuel()]);
+
+        $advert = $serializer->deserialize($advertAdd, Advert::class, 'json');
+        $advert->setGarage($garage);
+        $advert->setModel($modele);
+        $advert->setFuel($fuel);
+        $advert->setRef(uniqid());
+
         $this->getDoctrine()->getManager()->persist($advert);
         $this->getDoctrine()->getManager()->flush();
 
@@ -142,7 +167,7 @@ class AdvertController extends AbstractController
         return new JsonResponse($advertEdit, 200, [], true);
     }
     /**
-     * @Route("/pro/advert-delete/{id}", name="delete-advert", methods={"DELETE"})
+     * @Route("/pro/delete-advert/{id}", name="delete-advert", methods={"DELETE"})
      */
     public function delete(SerializerInterface $serializer, Request $request, $id)
     {

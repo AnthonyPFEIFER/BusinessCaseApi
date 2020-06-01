@@ -51,7 +51,7 @@ class AppApiKeyAdminAuthenticator extends AbstractGuardAuthenticator
 
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        return new JsonResponse("Missing X-Api-Key header", 401);
+        return new JsonResponse("Missing X-Api-Key Heaaaaaaaaaaaader", 401);
     }
 
     public function supportsRememberMe()

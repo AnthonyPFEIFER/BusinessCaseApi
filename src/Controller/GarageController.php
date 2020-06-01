@@ -20,8 +20,8 @@ class GarageController extends AbstractController
     public function getGarage(SerializerInterface $serializer, $id)
     {
         $garageRepository = $this->getDoctrine()->getRepository(Garage::class);
-        $garage = $garageRepository->getGarageById($id);
-        $garage = $serializer->serialize($garage, 'json');
+        $garage = $garageRepository->findOneBy(['id' => $id]);
+        $garage = $serializer->serialize($garage, 'json',  ["groups" => 'garage']);
 
         return new JsonResponse($garage, Response::HTTP_OK, [], true);
     }
@@ -76,30 +76,36 @@ class GarageController extends AbstractController
     /**
      * @Route("/admin/garage-edit/{id}", name="edit-garage", methods={"PUT"})
      */
-    public function modify(Request $request, SerializerInterface $serializer, $id)
+    public function edit(Request $request, SerializerInterface $serializer, $id)
     {
         $data = $request->getContent();
         $garage = $serializer->deserialize($data, Garage::class, 'json');
         $garageRepository = $this->getDoctrine()->getRepository(Garage::class);
-        $garageModify = $garageRepository->findOneBy(["id" => $id]);
+        $editGarage = $garageRepository->findOneBy(["id" => $id]);
 
-        if ($garage->getNom() !== null && $garage->getNom() !== $garageModify->getNom()) {
-            $garageModify->setNom($garage->getNom());
+        if ($garage->getName() !== null && $garage->getName() !== $editGarage->getName()) {
+            $editGarage->setName($garage->getName());
         }
-        if ($garage->getTel() !== null && $garage->getTel() !== $garageModify->getTel()) {
-            $garageModify->setTel($garage->getTel());
+        if ($garage->getTel() !== null && $garage->getTel() !== $editGarage->getTel()) {
+            $editGarage->setTel($garage->getTel());
         }
-        if ($garage->getAdresse() !== null && $garage->getAdresse() !== $garageModify->getAdresse()) {
-            $garageModify->setAdresse($garage->getAdresse());
+        if ($garage->getAddress() !== null && $garage->getAddress() !== $editGarage->getAddress()) {
+            $editGarage->setAddress($garage->getAddress());
         }
-        if ($garage->getVille() !== null && $garage->getVille() !== $garageModify->getVille()) {
-            $garageModify->setVille($garage->getVille());
+        if ($garage->getCity() !== null && $garage->getCity() !== $editGarage->getCity()) {
+            $editGarage->setCity($garage->getCity());
+        }
+        if ($garage->getPostCode() !== null && $garage->getPostCode() !== $editGarage->getPostCode()) {
+            $editGarage->setPostCode($garage->getPostCode());
+        }
+        if ($garage->getCountry() !== null && $garage->getCountry() !== $editGarage->getCountry()) {
+            $editGarage->setCountry($garage->getCountry());
         }
 
-        $this->getDoctrine()->getManager()->persist($garageModify);
+        $this->getDoctrine()->getManager()->persist($editGarage);
         $this->getDoctrine()->getManager()->flush();
 
-        $garage = $serializer->serialize($garageModify, 'json', ["groups" => 'garage']);
+        $garage = $serializer->serialize($editGarage, 'json', ["groups" => 'garage']);
 
         return new JsonResponse($garage, Response::HTTP_CREATED, [], true);
     }
