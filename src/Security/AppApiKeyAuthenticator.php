@@ -61,7 +61,8 @@ class AppApiKeyAuthenticator extends AbstractGuardAuthenticator
 
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        return new JsonResponse("Missing X-Api-Key header", 401);
+
+        return new JsonResponse($authException->getMessage(), 401);
     }
 
     public function supportsRememberMe()

@@ -26,8 +26,10 @@ class AdminController extends AbstractController
     public function loginAdmin(Request $request, SerializerInterface $serializer)
     {
 
+
         $loginAdmin = $request->getContent();
         $login = $serializer->deserialize($loginAdmin, Admin::class, 'json');
+
         $user = $this->getDoctrine()->getRepository(Admin::class)->findOneBy(['username' => $login->getUsername()]);
         if ($user == null) {
             $message = "Vos identifiants sont incorrects";

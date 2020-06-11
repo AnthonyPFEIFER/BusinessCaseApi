@@ -16,17 +16,17 @@ class PictureController extends AbstractController
 
 
     /**
-     * @Route("/pro/picture-add", name="add-picture", methods={"POST"})
+     * @Route("/pro/picture-add/{id}", name="add-picture", methods={"POST"})
      */
 
-    public function addPicture(Request $request, SerializerInterface $serializer, $uploader, $uploadDir)
+    public function addPicture(Request $request, SerializerInterface $serializer, $id, $image)
     {
         if (!is_dir('pictures')) {
             mkdir('pictures');
         }
-        $picture = $request->files->get($picture); // picture = nom de l'input du form / Récupère les données de l'image 
+        $picture = $request->files->get($image); // picture = nom de l'input du form / Récupère les données de l'image 
         $filename = \uniqid();
-        $request->files->move('public/pictures/', $picture, $filename);
+        $picture->move('public/pictures/', $picture, $filename);
 
         $pictureUrl = 'public/pictures/' . $filename;
 

@@ -213,6 +213,7 @@ class AdvertController extends AbstractController
 
         return new JsonResponse($modele, Response::HTTP_OK, [], true);
     }
+
     /**
      * @Route("/advert/filter", name="filterAdvert", methods={"GET"})
      */
@@ -224,6 +225,7 @@ class AdvertController extends AbstractController
 
         return new JsonResponse($adverts, Response::HTTP_OK, [], true);
     }
+
     /* Fonctionnent:
             /advert-delete/
             /adverts-number

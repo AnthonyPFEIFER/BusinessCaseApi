@@ -81,6 +81,11 @@ class Professional implements UserInterface
      */
     private $siret;
 
+    /**
+     * @ORM\Column(type="json", length=255)
+     * @Groups("pros")
+     * @Asserts\Length(min=14, max=14 )
+     */
     private $roles = [];
 
     /**
@@ -182,10 +187,15 @@ class Professional implements UserInterface
     }
     public function getRoles()
     {
-        $this->roles = ["ROLE_PRO"];
-        return $this->roles;
+        $roles = $this->roles;
+        $roles[] = 'ROLE_PRO';
+        return array_unique($roles);
     }
-
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
+    }
     /**
      * @return Collection|Garage[]
      */

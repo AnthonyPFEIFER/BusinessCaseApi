@@ -34,6 +34,7 @@ class ProfessionnelController extends AbstractController
         $loginPost = $request->getContent();
         $login = $serializer->deserialize($loginPost, Professional::class, 'json');
         $user = $this->getDoctrine()->getRepository(Professional::class)->findOneBy(['username' => $login->getUsername()]);
+
         if ($user == null) {
             $message = "Vos identifiants sont incorrects";
             return new JsonResponse($message, Response::HTTP_UNAUTHORIZED);
@@ -55,6 +56,7 @@ class ProfessionnelController extends AbstractController
         $pro = $serializer->deserialize($request->getContent(), Professional::class, 'json');
         $pro->setPassword(hash('sha256', $pro->getPassword()));
         $pro->setApiKey(hash('sha256', uniqid()));
+        $pro->setRoles(['ROLE_PRO']);
 
         $this->getDoctrine()->getManager()->persist($pro);
         $this->getDoctrine()->getManager()->flush();
