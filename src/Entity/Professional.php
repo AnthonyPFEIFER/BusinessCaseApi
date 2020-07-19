@@ -86,7 +86,7 @@ class Professional implements UserInterface
      * @Groups("pros")
      * @Asserts\Length(min=14, max=14 )
      */
-    private $roles = [];
+    private $roles;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Garage", mappedBy="professional")

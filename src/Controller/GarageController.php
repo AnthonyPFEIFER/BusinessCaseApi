@@ -21,7 +21,8 @@ class GarageController extends AbstractController
     {
         $garageRepository = $this->getDoctrine()->getRepository(Garage::class);
         $garage = $garageRepository->findOneBy(['id' => $id]);
-        $garage = $serializer->serialize($garage, 'json',  ["groups" => 'garage']);
+        $groupGarage = 'garage';
+        $garage = $serializer->serialize($garage, 'json',  ["groups" => $groupGarage]);
 
         return new JsonResponse($garage, Response::HTTP_OK, [], true);
     }
@@ -68,7 +69,8 @@ class GarageController extends AbstractController
         $this->getDoctrine()->getManager()->persist($garage);
         $this->getDoctrine()->getManager()->flush();
 
-        $garage = $serializer->serialize($garage, 'json', ["groups" => 'garage']);
+        $groupGarage = 'garage';
+        $garage = $serializer->serialize($garage, 'json', ["groups" => $groupGarage]);
 
         return new JsonResponse($garage, Response::HTTP_CREATED, [], true);
     }
@@ -105,7 +107,8 @@ class GarageController extends AbstractController
         $this->getDoctrine()->getManager()->persist($editGarage);
         $this->getDoctrine()->getManager()->flush();
 
-        $garage = $serializer->serialize($editGarage, 'json', ["groups" => 'garage']);
+        $groupGarage = 'garage';
+        $garage = $serializer->serialize($editGarage, 'json', ["groups" => $groupGarage]);
 
         return new JsonResponse($garage, Response::HTTP_CREATED, [], true);
     }
@@ -120,14 +123,9 @@ class GarageController extends AbstractController
         $this->getDoctrine()->getManager()->remove($garageDelete);
         $this->getDoctrine()->getManager()->flush();
 
-        $garage = $serializer->serialize($garageDelete, 'json', ["groups" => 'garage']);
+        $groupGarage = 'garage';
+        $garage = $serializer->serialize($garageDelete, 'json', ["groups" => $groupGarage]);
 
         return new JsonResponse($garage, Response::HTTP_CREATED, [], true);
     }
-    /* fonctionnent:
-        /garage/{id}
-        /garages
-        /garageByPro/
-        /garage-number
-    */
 }

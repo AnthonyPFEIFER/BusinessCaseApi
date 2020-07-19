@@ -28,6 +28,7 @@ class AdvertRepository extends ServiceEntityRepository
             ->join('a.model', 'm')
             ->join('m.brand', 'b')
             ->orderBy('a.id', 'DESC')
+            ->setMaxResults(15)
             ->getQuery()
             ->getResult();
     }
@@ -77,31 +78,32 @@ class AdvertRepository extends ServiceEntityRepository
     {
         $querybuilder = $this->createQueryBuilder('a');
         if ($dateImmat !== null) {
-            $querybuilder->where('a.dateImmat>:dateImmat')
-                ->setParameter([':dateImmat' => $dateImmat]);
+            $querybuilder->where('a.dateImmat > :dateImmat')
+                ->setParameter('dateImmat', $dateImmat);
         } elseif ($km !== null) {
-            $querybuilder->andWhere('a.km<:km')
-                ->setParameter([':km' => $km]);
+            $querybuilder->andWhere('a.km < :km')
+                ->setParameter('km', $km);
         } elseif ($price !== null) {
-            $querybuilder->andWhere('a.price<:price')
-                ->setParameter([':price' => $price]);
+            $querybuilder->andWhere('a.price < :price')
+                ->setParameter('price', $price);
         } elseif ($brand !== null) {
             $querybuilder->andWhere('b.name LIKE :brand')
                 ->join('a.model', 'm')
                 ->join('m.brand', 'b')
-                ->setParameter([':brand' => $brand]);
+                ->setParameter('brand', $brand);
         } elseif ($model !== null) {
             $querybuilder->andWhere('m.name LIKE :model')
                 ->join('a.model', 'm')
                 ->join('m.brand', 'b')
-                ->setParameter([':model' => $model]);
+                ->setParameter('model', $model);
         } elseif ($fuel !== null) {
-            $querybuilder->andWhere('a.fuel LIKE :fuel')
-                ->setParameter([':fuel' => $fuel]);
+            $querybuilder->andWhere('f.type LIKE :fuel')
+                ->join('a.fuel', 'f')
+                ->setParameter('fuel', $fuel);
         }
-        $querybuilder->getQuery();
-        return $querybuilder->getResult();
+        return $querybuilder->getQuery()->getResult();
     }
+
     public function getNumberOfAdverts()
     {
         return $this->createQueryBuilder('a')
@@ -110,57 +112,3 @@ class AdvertRepository extends ServiceEntityRepository
             ->getResult();
     }
 }
-/*         if ($dateImmat == null) {
-            $dateImmat = 1900;
-        }
-        if ($km == null) {
-            $km = 1000000;
-        }
-        if ($price == null) {
-            $price = 10000000;
-        }
-        if ($model == null && $brand == null) {
-            if ($fuel == null) {
-                $query = $this->createQueryBuilder('a')
-                    ->where('a.dateImmat>:dateImmat')
-                    ->andWhere('a.km<:km')
-                    ->andWhere('a.price<:price')
-                    ->setParameter([':dateImmat' => $dateImmat, ':km' => $km, ':price' => $price])
-                    ->getQuery();
-                return $query->getResult();
-            } else {
-                $query = $this->createQueryBuilder('a')
-                    ->where('a.dateImmat>:dateImmat')
-                    ->andWhere('a.km<:km')
-                    ->andWhere('a.price<:price')
-                    ->andWhere('a.fuel LIKE :fuel')
-                    ->setParameter([':dateImmat' => $dateImmat, ':km' => $km, ':price' => $price, ':fuel' => $fuel])
-                    ->getQuery();
-                return $query->getResult();
-            }
-        } elseif ($model == null) {
-            if ($fuel == null) {
-                $query = $this->createQueryBuilder('a')
-                    ->join('a.model', 'm')
-                    ->join('m.brand', 'b')
-                    ->where('a.dateImmat>:dateImmat')
-                    ->andWhere('a.km<:km')
-                    ->andWhere('a.price<:price')
-                    ->andWhere('b.name LIKE :brand')
-                    ->setParameter([':dateImmat' => $dateImmat, ':km' => $km, ':price' => $price, ':brand' => $brand])
-                    ->getQuery();
-                return $query->getResult();
-            } else {
-                $query = $this->createQueryBuilder('a')
-                    ->join('a.model', 'm')
-                    ->join('m.brand', 'b')
-                    ->where('a.dateImmat>:dateImmat')
-                    ->andWhere('a.km<:km')
-                    ->andWhere('a.price<:price')
-                    ->andWhere('a.fuel LIKE :fuel')
-                    ->andWhere('b.name LIKE :brand')
-                    ->setParameter([':dateImmat' => $dateImmat, ':km' => $km, ':price' => $price, ':fuel' => $fuel, ':brand' => $brand])
-                    ->getQuery();
-                return $query->getResult();
-            }
-        } */

@@ -91,7 +91,6 @@ class ProfessionnelController extends AbstractController
      */
     public function edit(Request $request, SerializerInterface $serializer, $id)
     {
-        $editPro = $this->getUser();
         $data = $request->getContent();
         $proRepository = $this->getDoctrine()->getRepository(Professional::class);
         $editPro = $proRepository->findOneBy(["id" => $id]);
@@ -136,13 +135,4 @@ class ProfessionnelController extends AbstractController
 
         return new JsonResponse($professionnels, Response::HTTP_OK, [], true);
     }
-
-    /* Fonctionnent : 
-        /admin/pro-add
-        /professionnels
-    */
-    /* Ne fonctionnent PAS:
-        /professionnel/id
-        /prof/edit
-    */
 }

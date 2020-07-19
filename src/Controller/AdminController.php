@@ -52,10 +52,4 @@ class AdminController extends AbstractController
     public function createUser(Request $request, SerializerInterface $serializer)
     {
     }
-
-    /* Fonctionnent: admin/advertsByGarage/      
-                    admin/login
-                    /admin/advertsByPro/
-
-*/
 }
