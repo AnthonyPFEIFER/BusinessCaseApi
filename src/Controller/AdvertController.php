@@ -206,8 +206,8 @@ class AdvertController extends AbstractController
         $data = $request->getContent();
         $advertTrad = $serializer->deserialize($data, AdvertTrad::class, 'json');
 
-        $modeleRepository = $this->getDoctrine()->getRepository(Model::class);
-        $modele = $modeleRepository->findOneBy(['name' => $advertTrad->getModel()]);
+        /*         $modeleRepository = $this->getDoctrine()->getRepository(Model::class);
+        $modele = $modeleRepository->findOneBy(['name' => $advertTrad->getModel()]); */
 
         $garageRepository = $this->getDoctrine()->getRepository(Garage::class);
         $garage = $garageRepository->findOneBy(['id' => $advertTrad->getGarage()]);
@@ -217,7 +217,7 @@ class AdvertController extends AbstractController
 
         $advert = $serializer->deserialize($data, Advert::class, 'json');
         $advert->setGarage($garage);
-        $advert->setModel($modele);
+        /*         $advert->setModel($modele); */
         $advert->setFuel($fuel);
 
         $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
@@ -240,9 +240,9 @@ class AdvertController extends AbstractController
         if ($advert->getFuel() !== null && $advert->getFuel() !== $advertEdit->getFuel()) {
             $advertEdit->setFuel($advert->getFuel());
         }
-        if ($advert->getModel() !== null && $advert->getModel() !== $advertEdit->getModel()) {
+        /*         if ($advert->getModel() !== null && $advert->getModel() !== $advertEdit->getModel()) {
             $advertEdit->setModel($advert->getModel());
-        }
+        } */
 
         $this->getDoctrine()->getManager()->persist($advertEdit);
         $this->getDoctrine()->getManager()->flush();
