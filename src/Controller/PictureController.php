@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Advert;
 use App\Entity\Picture;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -24,40 +25,28 @@ class PictureController extends AbstractController
     }
 
     /**
-     * @Route("/pro/picture-add", name="add-picture", methods={"POST"})
+     * @Route("/pro/picture-add/{id}", name="add-picture", methods={"POST"})
      */
 
-    public function addPicture(Request $request)
+    public function addPicture(Request $request, $id)
     {
-        $file = $request->files->get('picture');
-        $errors = [];
-        if ($file) {
-            $newFilename = uniqid() . '.' . $file->guessExtension();
-            if (!in_array($file->guessExtension(), ['jpeg', 'jpg', 'png'])) {
-                $errors = ['success' => false, 'message' => 'Format incorrect'];
-            } else {
-                try {
-                    $file->move(
-                        $this->params->get('pictures_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    $errors = ['success' => false, 'message' => $e];
-                }
-                if (count($errors) === 0) {
-                    $errors = ['success' => true, 'file' => $newFilename];
-                }
-            }
-        } else {
-            $errors = ['success' => false, 'message' => 'Fichier introuvable'];
-        }
+        $data = json_decode($request->getContent(), true);
 
+        $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
+        $advert = $advertRepository->findOneBy(['id' => $id]);
 
-        return new JsonResponse($errors);
+        $picture = new Picture();
+        $picture->setAdvert($advert);
+        $picture->setData($data['picture']);
+
+        $this->getDoctrine()->getManager()->persist($picture);
+        $this->getDoctrine()->getManager()->flush();
+
+        return new JsonResponse();
     }
 
     /**
-     * @Route("/pro/picturesByAdvert", name="picturesByAdvert", methods={"POST"})
+     * @Route("/pro/picturesByAdvert/{id}", name="picturesByAdvert", methods={"GET"})
      */
     public function getPicturesByAdvert(Request $request, SerializerInterface $serializer, $id)
     {

@@ -21,10 +21,10 @@ class PictureRepository extends ServiceEntityRepository
     public function getPicturesByAdvert($id)
     {
         return $this->createQueryBuilder('p')
-            ->select('p.data')
-            ->join('g.advert', 'a')
-            ->where('a.id = :id')
-            ->setParameter(':id', $id)
+            /*             ->select('p.data') */
+            //        ->join('p.advert', 'a') 
+            ->where('p.id = :id')
+            ->setParameter('id', $id)
             ->getQuery()
             ->getResult();
     }

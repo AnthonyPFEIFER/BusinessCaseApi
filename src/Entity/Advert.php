@@ -90,7 +90,7 @@ class Advert
 
     public function __construct()
     {
-        $this->pictures = new ArrayCollection();
+        /*         $this->pictures = new ArrayCollection(); */
     }
 
     public function getId(): ?int
@@ -200,36 +200,6 @@ class Advert
     public function setRef($ref)
     {
         $this->ref = $ref;
-
-        return $this;
-    }
-    /**
-     * @return Collection|Picture[]
-     */
-    public function getPictures(): Collection
-    {
-        return $this->pictures;
-    }
-
-    public function addPicture(Picture $picture): self
-    {
-        if (!$this->pictures->contains($picture)) {
-            $this->pictures[] = $picture;
-            $picture->setAdvert($this);
-        }
-
-        return $this;
-    }
-
-    public function removePicture(Picture $picture): self
-    {
-        if ($this->pictures->contains($picture)) {
-            $this->pictures->removeElement($picture);
-            // set the owning side to null (unless already changed)
-            if ($picture->getAdvert() === $this) {
-                $picture->setAdvert(null);
-            }
-        }
 
         return $this;
     }
