@@ -53,7 +53,7 @@ class PictureController extends AbstractController
 
         $pictureRepository = $this->getDoctrine()->getRepository(Picture::class);
         $picture = $pictureRepository->getPicturesByAdvert($id);
-        $picture = $serializer->serialize($picture, 'json');
+        $picture = $serializer->serialize($picture, 'json', ["groups" => 'pictures']);
 
         return new JsonResponse($picture, Response::HTTP_OK, [], true);
     }

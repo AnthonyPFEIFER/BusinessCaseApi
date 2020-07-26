@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Asserts;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PictureRepository")
@@ -20,6 +21,7 @@ class Picture
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"pictures"})
      */
     private $data;
 
